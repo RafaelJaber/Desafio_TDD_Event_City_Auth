@@ -2,10 +2,12 @@ package com.devsuperior.demo.controllers;
 
 import com.devsuperior.demo.dto.EventDTO;
 import com.devsuperior.demo.services.EventService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,7 +30,8 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<EventDTO> insert(@RequestBody EventDTO eventDTO) {
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN')")
+    public ResponseEntity<EventDTO> insert(@Valid @RequestBody EventDTO eventDTO) {
         EventDTO inserted = eventService.insert(eventDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(inserted.getId()).toUri();

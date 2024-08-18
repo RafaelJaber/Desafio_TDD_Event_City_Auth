@@ -7,10 +7,10 @@ import java.util.List;
 
 public class ValidationErrorResponse extends CustomErrorResponse {
 
-    private final List<FieldMessageResponse> messages = new ArrayList<>();
+    private final List<FieldMessageResponse> errors = new ArrayList<>();
 
-    public List<FieldMessageResponse> getMessages() {
-        return messages;
+    public List<FieldMessageResponse> getErrors() {
+        return errors;
     }
 
     public ValidationErrorResponse(OffsetDateTime timestamp, Integer status, String error, String message, String path) {
@@ -18,7 +18,7 @@ public class ValidationErrorResponse extends CustomErrorResponse {
     }
 
     public void addError(String fieldName, String message) {
-        messages.removeIf(x -> x.getFieldName().equals(fieldName));
-        messages.add(new FieldMessageResponse(fieldName, message));
+        errors.removeIf(x -> x.getFieldName().equals(fieldName));
+        errors.add(new FieldMessageResponse(fieldName, message));
     }
 }
