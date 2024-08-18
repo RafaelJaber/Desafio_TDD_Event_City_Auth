@@ -2,9 +2,14 @@ package com.devsuperior.demo.controllers;
 
 import com.devsuperior.demo.dto.EventDTO;
 import com.devsuperior.demo.services.EventService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("events")
@@ -14,6 +19,20 @@ public class EventController {
 
     public EventController(EventService eventService) {
         this.eventService = eventService;
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<EventDTO>> findAll(Pageable pageable) {
+        Page<EventDTO> events = eventService.findAll(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(events);
+    }
+
+    @PostMapping
+    public ResponseEntity<EventDTO> insert(@RequestBody EventDTO eventDTO) {
+        EventDTO inserted = eventService.insert(eventDTO);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(inserted.getId()).toUri();
+        return ResponseEntity.created(uri).body(inserted);
     }
 
     @PutMapping("/{id}")
